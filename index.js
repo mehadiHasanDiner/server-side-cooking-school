@@ -21,8 +21,16 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 client.connect(err => {
     console.log('connection err', err)
   const classCollection = client.db("cookingSchool").collection("classes");
-  console.log('Database connected Successfully')
 
+  app.post('/addClasses', (req, res) => {
+    const newClass = req.body;
+    console.log('adding new class', newClass);
+    classCollection.insertOne(newClass)
+    .then(result => {
+      console.log('Inserted count', result.insertedCount);
+      res.send(result.insertedCount > 0)
+    })
+  })
   
 //   client.close();
 });

@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const MongoClient = require('mongodb').MongoClient;
+const ObjectID = require('mongodb').ObjectId ;
 const cors = require('cors');
 const bodyParser = require('body-parser');
 require('dotenv').config();
@@ -9,6 +10,8 @@ const port = process.env.PORT || 5055;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -24,10 +27,21 @@ client.connect(err => {
 
   app.get('/classes', (req, res) => {
     classCollection.find()
-    .toArray((err, items) => {
-      res.send(items)
+    .toArray((err, documents) => {
+      res.send(documents)
     })     
   })
+
+  app.get('/classes/:id', (req, res) => {
+    const id = ObjectID(req.params.id);
+    console.log('Show ID', id)
+    classCollection.find({_id: id})
+    .toArray((err, documents) => {
+      res.send(documents)
+    })
+    // console.log(documents)
+  })
+
 
   app.post('/addClasses', (req, res) => {
     const newClass = req.body;

@@ -22,6 +22,13 @@ client.connect(err => {
     console.log('connection err', err)
   const classCollection = client.db("cookingSchool").collection("classes");
 
+  app.get('/classes', (req, res) => {
+    classCollection.find()
+    .toArray((err, items) => {
+      res.send(items)
+    })     
+  })
+
   app.post('/addClasses', (req, res) => {
     const newClass = req.body;
     console.log('adding new class', newClass);
